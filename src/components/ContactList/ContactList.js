@@ -1,19 +1,25 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import ListItem from 'components/ListItem/ListItem';
 
-const ContactList = ({ contacts }) => {
+const ContactList = () => {
+  const filter = useSelector(state => state.filter.filter);
+  const contacts = useSelector(state => state.contacts.items);
+
+  const getVisibleContacts = () => {
+    const normalizedFilter = filter.toLowerCase();
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(normalizedFilter)
+    );
+  };
+
   return (
     <ul>
-      {contacts.map(({ id, name, number }) => (
+      {getVisibleContacts().map(({ id, name, number }) => (
         <ListItem key={id} number={number} name={name} id={id} />
       ))}
     </ul>
   );
-};
-
-ContactList.propTypes = {
-  contacts: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export default ContactList;
